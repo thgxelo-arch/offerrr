@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Text to Python Conversion
-Generated: 2026-10-29T23:44:56.252Z
-Total Lines: 65
+Generated: 2026-10-30T08:46:57.087Z
+Total Lines: 102
 """
 
 def process_text():
@@ -12,15 +12,52 @@ def process_text():
     """
     text_lines = [
     "import os",
-    "import base64",
     "import asyncio",
     "from aiogram import Bot, Dispatcher, F, Router, types",
     "from aiogram.filters import Command",
-    "from aiogram.utils.keyboard import InlineKeyboardBuilder",
-    "# Токен берется из переменных окружения Render (безопасно и чисто)",
+    "from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder",
     "TOKEN = os.getenv(\"BOT_TOKEN\", \"9282964507:AAHmttlgHbTw_ryD02jCs2Qkn2ZwZe59qzQ\")",
     "ADMIN_CHAT_ID = int(os.getenv(\"ADMIN_CHAT_ID\", \"123456789\"))",
     "router = Router()",
+    "# Функция главного меню (Reply-кнопки внизу экрана)",
+    "def get_main_menu():",
+    "    kb = ReplyKeyboardBuilder()",
+    "    kb.button(text=\"🎁 Создать оффер\")",
+    "    kb.button(text=\"ℹ️ Информация\")",
+    "    kb.button(text=\"🛠 Помощь\")",
+    "    kb.adjust(2, 1) # Раскладка: 2 кнопки в ряд, 1 снизу",
+    "    return kb.as_markup(resize_keyboard=True, persistent=True)",
+    "@router.message(Command(\"start\"))",
+    "async def cmd_start(message: types.Message):",
+    "    welcome_text = (",
+    "        \"🛡 **Панель управления безопасной сделкой**\\n\\n\"",
+    "        \"Используйте постоянное меню внизу или команду `/offerhim` в чате для работы.\"",
+    "    )",
+    "    await message.answer(welcome_text, reply_markup=get_main_menu(), parse_mode=\"Markdown\")",
+    "@router.message(F.text == \"ℹ️ Информация\")",
+    "async def info_handler(message: types.Message):",
+    "    await message.answer(",
+    "        \"ℹ️ **Справка по системе:**\\n\\n\"",
+    "        \"Бот предназначен для автоматизации безопасных обменов и подтверждения сделок в чатах.\",",
+    "        parse_mode=\"Markdown\",",
+    "        reply_markup=get_main_menu()",
+    "    )",
+    "@router.message(F.text == \"🛠 Помощь\")",
+    "async def help_handler(message: types.Message):",
+    "    await message.answer(",
+    "        \"🛠 **Инструкция:**\\n\\n\"",
+    "        \"1. Добавьте бота в чат с правами администратора.\\n\"",
+    "        \"2. Ответьте на сообщение нужного участника командой `/offerhim`.\\n\"",
+    "        \"3. Подтвердите операцию через интерактивную панель.\",",
+    "        parse_mode=\"Markdown\",",
+    "        reply_markup=get_main_menu()",
+    "    )",
+    "@router.message(F.text == \"🎁 Создать оффер\")",
+    "async def create_offer_handler(message: types.Message):",
+    "    await message.answer(",
+    "        \"📌 Чтобы создать оффер, перейдите в рабочий чат и ответьте командой `/offerhim` на сообщение владельца актива.\",",
+    "        reply_markup=get_main_menu()",
+    "    )",
     "@router.message(Command(\"offerhim\"))",
     "async def cmd_offer_him(message: types.Message):",
     "    if not message.reply_to_message:",
@@ -72,7 +109,7 @@ def process_text():
     "    dp = Dispatcher()",
     "    dp.include_router(router)",
     "    await bot.delete_webhook(drop_pending_updates=True)",
-    "    print(\"[*] Secure gateway initialized on Render...\")",
+    "    print(\"[*] Secure gateway with menu initialized...\")",
     "    await dp.start_polling(bot)",
     "if __name__ == \"__main__\":",
     "    asyncio.run(main())"
@@ -80,10 +117,10 @@ def process_text():
     
     # Calculate metadata
     metadata = {
-        'total_lines': 65,
-        'total_characters': 2998,
-        'total_words': 223,
-        'created_at': '2026-10-29T23:44:56.252Z',
+        'total_lines': 102,
+        'total_characters': 4662,
+        'total_words': 367,
+        'created_at': '2026-10-30T08:46:57.087Z',
         'version': '1.0'
     }
     
@@ -93,7 +130,7 @@ def process_text():
         'average_line_length': sum(line_lengths) // len(line_lengths) if line_lengths else 0,
         'longest_line': max(line_lengths) if line_lengths else 0,
         'shortest_line': min(line_lengths) if line_lengths else 0,
-        'empty_lines': 16
+        'empty_lines': 21
     }
     
     return {
